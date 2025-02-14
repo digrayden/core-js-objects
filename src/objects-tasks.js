@@ -118,8 +118,22 @@ function isEmptyObject(obj) {
  *    immutableObj.newProp = 'new';
  *    console.log(immutableObj) => {a: 1, b: 2}
  */
-function makeImmutable(/* obj */) {
-  throw new Error('Not implemented');
+function makeImmutable(obj) {
+  function deepFreeze(o) {
+    Object.freeze(o);
+    Object.keys(o).forEach((key) => {
+      if (
+        typeof o[key] === 'object' &&
+        o[key] !== null &&
+        !Object.isFrozen(o[key])
+      ) {
+        deepFreeze(o[key]);
+      }
+    });
+    return o;
+  }
+
+  return deepFreeze(obj);
 }
 
 /**
